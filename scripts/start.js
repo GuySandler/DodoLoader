@@ -70,7 +70,10 @@ var start = {
 		// player
 		player = BABYLON.Mesh.CreateBox("player",0.5,scene);
 		player.scaling = new BABYLON.Vector3(1, 0.16, 1);
-		player.physicsImpostor = new BABYLON.PhysicsImpostor(player, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1.0, restitution: 1.0, friction: 0.5}, scene);
+		// player.physicsImpostor = new BABYLON.PhysicsImpostor(player, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1.0, restitution: 1.0, friction: 0.5}, scene);
+        const playerPhys = new BABYLON.PhysicsBody(player, BABYLON.PhysicsMotionType.DYNAMIC, false, scene);
+        const playerPhys = new BABYLON.PhysicsBody(player, BABYLON.PhysicsMotionType.DYNAMIC, false, scene);
+        playerPhys.setMassProperties({ mass: 1.0, restitution: 1.0, friction: 0.5});
 
 		player.position = new BABYLON.Vector3(0,0,0);
 		player.applyGravity = true;
@@ -123,6 +126,10 @@ var start = {
 		cape_tail.scaling.z = 0.3;
 		cape_tail.isVisible = false;
 		cape_tail.parent = player;
-
+        BABYLON.SceneLoader.importMesh("", "assets/models/", "falcon_jet.glb", scene, function (newMeshes) {
+            newMeshes[0].parent = player;
+            newMeshes[0].scaling = new BABYLON.Vector3(0.1,0.1,0.1);
+            newMeshes[0].position = new BABYLON.Vector3(0,0,0);
+        });
 	}
 }

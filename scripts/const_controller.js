@@ -69,74 +69,88 @@ var cc = {
 		this.default["light.specular"] = () => {return new BABYLON.Color3(1, 1, 1)};
 		this.default["light.groundColor"] = () => {return new BABYLON.Color3(0, 0, 0)};
 		this.default["gravity"] = () => {
-            let gravitytoggle = document.getElementById("gravityoverwrite")
+            let gravitytoggle = document.getElementById("gravityoverwrite");
             let gravityOverwrite = document.getElementById("gravity");
             let freeze = document.getElementById("freeze");
             if (gravitytoggle.checked) {
-                return new BABYLON.Vector3(0,gravityOverwrite.value,0)
+                return new BABYLON.Vector3(0, gravityOverwrite.value, 0);
+            } else if (freeze.checked) {
+                return new BABYLON.Vector3(0, 0, 0);
+            } else {
+                return new BABYLON.Vector3(0, -9, 0);
             }
-            else if (freeze.checked) {
-                return new BABYLON.Vector3(0,0,0)
-            }
-            else {return new BABYLON.Vector3(0,-9,0)}
         }
-		this.default["camera.upVector"] = () => {return new BABYLON.Vector3(0,1,0)};
+		this.default["camera.upVector"] = () => {
+            return new BABYLON.Vector3(0, 1, 0);
+        };
 	},
 	set_monkey: function(key, val) {
-		this.monkey[key] = val;
-	},
-	get: function(const_key, top_vec=null) {
-		var vec = this.default[const_key]();
-		if (Object.keys(vec).length == 0) {
-			// scalar
-			var arr = [vec, this.monkey[const_key], top_vec].filter(v => v != null);
-			return arr[arr.length - 1];
-		} else {
-	        // vector
-	        let is_color = ((vec.r) && (vec.g) && (vec.b));
-	        let arr = [this.monkey[const_key], top_vec];
-	        if (is_color) {
-	        	for (var i=0;i<2;i++) {
-	        		let ar = arr[i];
-	        		if (ar) {
-	        			vec = ar;
-	        		}
-	        	}
-	        } else {
-		        for (let key in vec) {
-		        	for (var i=0;i<2;i++) {
-		        		let ar = arr[i];
-		        		if ((ar != null) && (ar[key] != null)) {
-		        			vec[key] = ar[key];
-		        		}
-		        	}
-		        }
-		    }
-	        return vec;
-	    }
-	},
+        this.monkey[key] = val;
+    },
+	get: function(const_key, top_vec = null) {
+        // Debugging statements
+        console.log(`const_key: ${const_key}`);
+        console.log(`this.default[const_key]:`, this.default[const_key]);
+    
+        // Check if this.default[const_key] is a function
+        if (typeof this.default[const_key] !== 'function') {
+            throw new Error(`this.default[${const_key}] is not a function`);
+        }
+    
+        var vec = this.default[const_key]();
+        if (Object.keys(vec).length == 0) {
+            // scalar
+            var arr = [vec, this.monkey[const_key], top_vec].filter(v => v != null);
+            return arr[arr.length - 1];
+        } else {
+            // vector
+            let is_color = ((vec.r) && (vec.g) && (vec.b));
+            let arr = [this.monkey[const_key], top_vec];
+            if (is_color) {
+                for (var i = 0; i < 2; i++) {
+                    let ar = arr[i];
+                    if (ar) {
+                        vec = ar;
+                    }
+                }
+            } else {
+                for (let key in vec) {
+                    for (var i = 0; i < 2; i++) {
+                        let ar = arr[i];
+                        if ((ar != null) && (ar[key] != null)) {
+                            vec[key] = ar[key];
+                        }
+                    }
+                }
+            }
+        }
+    },
 	refresh: function() {
-		camera.maxZ = this.get("camera.maxZ");
-		light.intensity = this.get("light.intensity");
-		radius = this.get("radius");
-		cameraDownAngle = this.get("cameraDownAngle");
-		cameraRightAngle = this.get("cameraRightAngle");
-		speed = this.get("speed");
-		steer = this.get("steer");
-		player.scaling = this.get("player.scaling");
-		scene.clearColor = this.get("scene.clearColor");
-		scene.ambientColor = this.get("scene.ambientColor");
-		light.diffuse = this.get("light.diffuse");
-		light.specular = this.get("light.specular");
-		light.groundColor = this.get("light.groundColor");
-		jumpSpeed = this.get("jumpSpeed");
-		jumpHeight = this.get("jumpHeight");
-		a.fov_mul2(null);
-		a.g(null, null, null);
-		a.d(null, null, null);
-		a.t(null, null, null);
-		a.cam_d(null);
-	},
+        // Debugging statements
+        console.log("Refreshing values...");
+    
+        // Helper function to get and log values
+        const getValue = (key) => {
+            console.log(`Getting value for key: ${key}`);
+            const value = this.get(key);
+            console.log(`Value for ${key}:`, value);
+            return value;
+        };
+    
+        camera.maxZ = getValue("camera.maxZ");
+        light.intensity = getValue("light.intensity");
+        radius = getValue("radius");
+        cameraDownAngle = getValue("cameraDownAngle");
+        cameraRightAngle = getValue("cameraRightAngle");
+        speed = getValue("speed");
+        steer = getValue("steer");
+        player.scaling = getValue("player.scaling");
+        scene.clearColor = getValue("scene.clearColor");
+        scene.ambientColor = getValue("scene.ambientColor");
+        light.diffuse = getValue("light.diffuse");
+        light.specular = getValue("light.specular");
+        light.groundColor = getValue("light.groundColor");
+    },
 	hard_reset: function() {
 		cc.monkey = {};
 	}
