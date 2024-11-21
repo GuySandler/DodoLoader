@@ -6,13 +6,13 @@
     <link rel="icon" href="images/dodoloader.webp">
     <meta name="description" content="Modded Ice Dodo by Onionfist.com">
     <style type="text/css" media="screen">
-        @font-face {
+        /* @font-face {
             font-family: "pixeled";
             src: url('./assets/fonts/pixeled.ttf');
-        }
+        } */
         * {
             box-sizing: border-box;
-            font-family: "pixeled";
+            /* font-family: "pixeled"; */
             /* font-size: small; */
             color:#bbbbbb;
         }
@@ -83,7 +83,8 @@
             <button onclick="localStorage.clear();window.location.reload()">Clear All Custom</button>
             <img src="/assets/svgs/caret-right-fill.svg" id="rightArrow" class="arrow" style="float:right;margin-right:50px;" onclick="cycleRight()">
             <img src="/assets/svgs/caret-left-fill.svg" id="leftArrow" class="arrow" style="float:left;margin-left:50px;" onclick="cycleLeft()">
-            <p style="font-size:xx-small;padding-bottom: 10px;">if game does not load you messed up the cups, clear them</p>
+            <p style="font-size:small;padding-bottom: 10px;">if game does not load you messed up the cups, clear them</p>
+            <p style="font-size:small;padding-bottom: 10px;"><a href="https://discord.gg/hQvKAdEH5Q">Join The Discord</a></p>
         </div>
         <div id="0">
             <form id="Cupadder">
@@ -98,7 +99,7 @@
                 <p style="font-size: small;">Image for cup (PNG only)</p>
             </form>
             <h3>Custom Maps</h3>
-            <p style="font-size: small;">Name Of Map</p>
+            <p style="font-size: small;">id Of Map</p>
             <input id="ImportMapId" type="text">
             <p style="font-size: small;">Map Script or URL (real, not tinyURL)</p>
             <textarea style="color:black;font-size: xx-small;font-family: arial;" id="ImportCustomMap"></textarea>
@@ -132,7 +133,7 @@
             <p>This is a tool for viewing maps and making freecam videos</p>
             <p>Freecam: frees camera from player</p>
             <p>Freeze Dodo: freezes dodo in place (must go menu and back to disable)</p>
-            <p>Follow Player: looks at the player at all times automatically</p>
+            <p>Follow Player: follow the player throughout the level with your desired height and distance</p>
             <p>You can use the buttons or use ijkl controls to move + p; to move up and down</p>
             <p>You can use the bottons or hold shift with ijkl to rotate camera</p>
             <h3>Practice Mode</h3>
