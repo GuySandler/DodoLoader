@@ -51,7 +51,7 @@
     </div>
     <div id="preroll"></div>
     <div id="ModMenu">
-        <div id="ModMenuContent" style="opacity: 75%;position:absolute;top:0;right:5vw;width:17vw;border:rgb(59, 59, 59) 1px solid;background-color: rgb(39, 39, 39);border-radius: 0 0 5px 5px;-index:-1">
+        <div id="ModMenuContent" style="opacity: 75%;position:absolute;top:0;right:5vw;width:17vw;border:rgb(59, 59, 59) 1px solid;background-color: rgb(39, 39, 39);border-radius: 0 0 5px 5px;overflow-y: auto;">
             <button id="togglemenu" class="modbutton">ModMenu (click)</button>
             <div class="modmenuOption">
                 <botton class="button" onclick="window.location.href='../'">Back To Config</botton>
@@ -174,6 +174,11 @@
                 <button class="button" id="resetlevel">Reset Level</button>
                 <br><input id="preview" type="checkbox">
                 <label>Preview Level (beta)</label>
+				<br>
+				<input id="MouseControls" type="checkbox">
+				<label for="MouseControls">Mouse Controls</label>
+				<input type="range" min="0.1" max="2" id="MouseControlsSensitivity" step=".1">
+				<br><label id="MouseControlsText">Sensitivity (1 default)</label>
             </div>
         </div>
     </div>
@@ -252,6 +257,8 @@
             $("#followtoggle").hide();
             $("#dodocontrols").hide();
             $("#challangeMenu").hide();
+			$("#MouseControlsSensitivity").hide();
+			$("#MouseControlsText").hide();
 
             $("#testbutton").click(function() {
                 sphere = BABYLON.MeshBuilder.CreateIcoSphere("icosphere", options = {radius: 3, subdivisions: 4}, scene);
@@ -560,6 +567,30 @@
                 $("#followtoggle").toggle();
                 $("#freecam").prop("checked", true);
             });
+			let MouseControls = false;
+			let MouseControlsSensitivity = 1;
+			$("#MouseControls").on("input", function() {
+				$("#MouseControlsSensitivity").toggle();
+				$("#MouseControlsText").toggle();
+				MouseControls = !MouseControls;
+				document.addEventListener("click", () => {
+					if (isMapLoaded && MouseControls) document.body.requestPointerLock();
+				});
+
+				document.addEventListener("mousemove", (event) => {
+					if (document.pointerLockElement === document.body && isMapLoaded && MouseControls) {
+						rotation += event.movementX * 0.002 * MouseControlsSensitivity;
+					}
+				});
+
+				document.addEventListener("pointerlockchange", () => {
+					if (document.pointerLockElement !== document.body && isMapLoaded && MouseControls) {
+						console.log("Pointer unlocked");
+					}
+				});
+
+			});
+
 
             $("#gravity").on("input", function() {
                 $("#gravityindicator").text($(this).val());
@@ -577,6 +608,10 @@
                 $("#followheightindicator").text("keep height: "+$(this).val());
                 window.followHeight = parseFloat($(this).val());
             });
+			$("#MouseControlsSensitivity").on("input", function() {
+				MouseControlsSensitivity = parseFloat($(this).val());
+				$("#MouseControlsText").text("Sensitivity: "+$(this).val());
+			});
             // window.followSpeed = 1;
             // $("#followspeed").on("input", function() {
             //     $("#followspeedindicator").text("Follow speed: "+$(this).val());
