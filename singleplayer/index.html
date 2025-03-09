@@ -370,10 +370,12 @@
 			});
 
 			$(document).on("mouseup touchend", function() {
-				window.controls.right = false;
-				window.controls.left = false;
-				window.controls.space = false;
-				window.controls.down = false;
+				if (isMapLoaded) {
+					window.controls.right = false;
+					window.controls.left = false;
+					window.controls.space = false;
+					window.controls.down = false;
+				}
 			});
 
             // $("#testbutton").click(function() {
