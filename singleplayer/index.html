@@ -43,7 +43,7 @@
       <div style="position:absolute;top:0;left:0;width:100vw;height:100vh;box-sizing:border-box;" id="app"></div>
     </div>
     <img id="validation" src="/assets/icons/validation.svg" alt="validation" style="position:absolute;right:-15px;bottom:50px;width:20vh">
-    <button id="pause" style="width:5vw;height:5vw;position:absolute;left:25px;top:100px;background:none;border:none;cursor:pointer;">
+    <button id="pause" style="width:4vw;height:4vw;position:absolute;left:25px;top:100px;background:none;border:none;cursor:pointer;">
         <img src="/assets/icons/pause.svg" alt="pause" style="width: 100%;">
     </button>
     <div id="pauseCountDown" style="position:absolute;top:50%;left:50%;font-size:3vw;color:white;display:none;width:5vw;height:5vw;background-color:gray;transform:translate(-50%,-50%);border-radius:5px;">
@@ -306,6 +306,7 @@
 				$("#LeftMobile").hide();
 				$("#MobileJump").hide();
 				$("#MobileDrift").hide();
+				$("#fullscreen").hide();
 			}
 
 			$(document).on('fullscreenchange', function() {
