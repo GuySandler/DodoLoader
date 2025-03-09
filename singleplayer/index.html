@@ -179,6 +179,9 @@
 				<label for="MouseControls">Mouse Controls</label>
 				<input type="range" min="0.1" max="2" id="MouseControlsSensitivity" step=".1">
 				<br><label id="MouseControlsText">Sensitivity (1 default)</label>
+				<br>
+				<input id="AltMobileControls" type="checkbox">
+				<label for="AltMobileControls">Alt Mobile Controls</label>
             </div>
         </div>
     </div>
@@ -287,6 +290,7 @@
 				$("#LeftMobile").show();
 				$("#MobileJump").show();
 				$("#MobileDrift").show();
+				$("#AltMobileControls").show();
 				document.getElementById('MobileJump').addEventListener('contextmenu', function(e) {
 					e.preventDefault();
 				});
@@ -307,6 +311,7 @@
 				$("#MobileJump").hide();
 				$("#MobileDrift").hide();
 				$("#fullscreen").hide();
+				$("#AltMobileControls").hide();
 			}
 
 			$(document).on('fullscreenchange', function() {
@@ -367,6 +372,24 @@
 
 			$("#MobileDrift").on("mousedown touchstart", function() {
 				window.controls.down = true;
+			});
+
+			$("#AltMobileControls").on("change", function() {
+	// <button id="MobileDrift" style="position:absolute;right:10px;bottom:calc(20px + 10vh * 2);width:13vw;height:10vw;background:rgba(75, 227, 75, .25);border:none;cursor:pointer;">
+
+				if ($(this).is(":checked")) { // alt
+					$("#RightMobile").css("right", "10px");
+					$("#RightMobile").css("left", "");
+					$("#MobileJump").css("left", "10px");
+					$("#MobileJump").css("right", "");
+					$("#MobileJump").css("bottom", "calc(20px + 10vh * 2)");
+				} else { // normal
+					$("#RightMobile").css("right", "");
+					$("#RightMobile").css("left", "calc(40px + 10vw)");
+					$("#MobileJump").css("right", "10px");
+					$("#MobileJump").css("left", "");
+					$("#MobileJump").css("bottom", "10px");
+				}
 			});
 
 			$(document).on("mouseup touchend", function() {
