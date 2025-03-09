@@ -31,7 +31,7 @@
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
-            margin: 0; 
+            margin: 0;
         }
         p {
             margin: 2px;
@@ -40,13 +40,13 @@
   </head>
   <body>
     <div id="appContainer">
-      <div id="app"></div>
+      <div style="position:absolute;top:0;left:0;width:100vw;height:100vh;box-sizing:border-box;" id="app"></div>
     </div>
     <img id="validation" src="/assets/icons/validation.svg" alt="validation" style="position:absolute;right:-15px;bottom:50px;width:20vh">
-    <button id="pause" style="width:3vw;height:3vw;position:absolute;left:25px;top:100px;background:none;border:none;cursor:pointer;">
+    <button id="pause" style="width:5vw;height:5vw;position:absolute;left:25px;top:100px;background:none;border:none;cursor:pointer;">
         <img src="/assets/icons/pause.svg" alt="pause" style="width: 100%;">
     </button>
-    <div id="pauseCountDown" style="position:absolute;top:50%;left:50%;font-size:3vw;color:white;display:none;width:4vw;height:4vw;background-color:gray;transform:translate(-50%,-50%);border-radius:5px;">
+    <div id="pauseCountDown" style="position:absolute;top:50%;left:50%;font-size:3vw;color:white;display:none;width:5vw;height:5vw;background-color:gray;transform:translate(-50%,-50%);border-radius:5px;">
         <h1 style="position:relative;top:50%;transform:translateY(-50%);">3</h1>
     </div>
     <div id="preroll"></div>
@@ -232,9 +232,90 @@
         <progress id="progress" value=".5" max="100" style="width:40vw;"></progress>
     </div>
 
+	<button id="fullscreen" style="position:absolute;top:0;left:0;width:100px;height:20px;background:white;z-index:999;">fullscreen</button>
+	<button id="RightMobile" style="position:absolute;left:calc(40px + 10vw);bottom:10px;width:13vw;height:10vw;background:rgba(227, 75, 75, .25);border:white 2px solid;z-index:999;">
+		<img src="../assets/svgs/caret-right-fill.svg" style="width:90%;height: 90%;">
+	</button>
+	<button id="LeftMobile" style="position:absolute;left:10px;bottom:10px;width:13vw;height:10vw;background:rgba(75, 75, 227, .25);border:white 2px solid;z-index:999;">
+		<img src="../assets/svgs/caret-left-fill.svg" style="width:90%;height: 90%;">
+	</button>
+	<button id="MobileJump" style="position:absolute;right:10px;bottom:10px;width:13vw;height:10vw;background:rgba(75, 227, 75, .25);border:none;cursor:pointer;">
+		<img src="../assets/svgs/jumpButton.svg" style="width:90%;height: 90%;">
+	</button>
+	<button id="MobileDrift" style="position:absolute;right:10px;bottom:calc(20px + 10vh * 2);width:13vw;height:10vw;background:rgba(75, 227, 75, .25);border:none;cursor:pointer;">
+		<img src="../assets/svgs/driftMobile.svg" style="width:90%;height: 90%;">
+	</button>
+
     <script type="text/javascript" src="/scripts/decorations.js?v=0.179"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+			function isMobile() {
+				var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+				return /android|iPad|iPhone|iPod/i.test(userAgent);
+			}
+
+			function requestFullscreenAndLockOrientation() {
+				if (document.documentElement.requestFullscreen) {
+					document.documentElement.requestFullscreen().then(() => {
+						if (screen.orientation && screen.orientation.lock) {
+							screen.orientation.lock('landscape').catch(err => {
+								console.error('Failed to lock orientation:', err);
+							});
+						}
+					}).catch(err => {console.error('Failed to enter fullscreen mode:', err);});
+				}
+			}
+
+			function exitFullscreenAndUnlockOrientation() {
+				if (document.exitFullscreen) {
+					document.exitFullscreen().then(() => {
+						if (screen.orientation && screen.orientation.unlock) {
+							screen.orientation.unlock().catch(err => {
+								console.error('Failed to unlock orientation:', err);
+							});
+						}
+					}).catch(err => {console.error('Failed to exit fullscreen mode:', err);});
+				}
+			}
+
+
+
+			if (isMobile()) {
+				// alert("PHONE");
+				$("#validation").hide();
+				$("#RightMobile").show();
+				$("#LeftMobile").show();
+				$("#MobileJump").show();
+				$("#MobileDrift").show();
+				document.getElementById('MobileJump').addEventListener('contextmenu', function(e) {
+					e.preventDefault();
+				});
+				document.getElementById('LeftMobile').addEventListener('contextmenu', function(e) {
+					e.preventDefault();
+				});
+				document.getElementById('RightMobile').addEventListener('contextmenu', function(e) {
+					e.preventDefault();
+				});
+				document.getElementById('MobileDrift').addEventListener('contextmenu', function(e) {
+					e.preventDefault();
+				});
+			}
+			else {
+				$("#validation").show();
+				$("#RightMobile").hide();
+				$("#LeftMobile").hide();
+				$("#MobileJump").hide();
+				$("#MobileDrift").hide();
+			}
+
+			$(document).on('fullscreenchange', function() {
+				if (document.fullscreenElement) {
+					$("#fullscreen").hide();
+				} else {
+					$("#fullscreen").show();
+				}
+			});
+
             var menu = document.getElementById('cheats');
             var menuInputs = menu.querySelectorAll('input');
             menuInputs.forEach(function(input) {
@@ -260,13 +341,47 @@
 			$("#MouseControlsSensitivity").hide();
 			$("#MouseControlsText").hide();
 
-            $("#testbutton").click(function() {
-                sphere = BABYLON.MeshBuilder.CreateIcoSphere("icosphere", options = {radius: 3, subdivisions: 4}, scene);
-                sphere.position = new BABYLON.Vector3(0, 2, -50);
-                // player.scale = new BABYLON.Vector3(0.1, 0.1, 0.1);
-                player.scaling = new BABYLON.Vector3(2, 2, 2);
-                physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 1, friction: 0.1}, scene)
-            })
+			$("#fullscreen").click(function() {
+				if (document.fullscreenElement) {
+					exitFullscreenAndUnlockOrientation();
+					window.scrollTo(0, 0);
+				} else {
+					requestFullscreenAndLockOrientation();
+				}
+			});
+
+			$("#RightMobile").on("mousedown touchstart", function() {
+				window.controls.right = true;
+				window.controls.left = false;
+			});
+
+			$("#LeftMobile").on("mousedown touchstart", function() {
+				window.controls.left = true;
+				window.controls.right = false;
+			});
+
+			$("#MobileJump").on("mousedown touchstart", function() {
+				window.controls.space = true;
+			});
+
+			$("#MobileDrift").on("mousedown touchstart", function() {
+				window.controls.down = true;
+			});
+
+			$(document).on("mouseup touchend", function() {
+				window.controls.right = false;
+				window.controls.left = false;
+				window.controls.space = false;
+				window.controls.down = false;
+			});
+
+            // $("#testbutton").click(function() {
+            //     sphere = BABYLON.MeshBuilder.CreateIcoSphere("icosphere", options = {radius: 3, subdivisions: 4}, scene);
+            //     sphere.position = new BABYLON.Vector3(0, 2, -50);
+            //     // player.scale = new BABYLON.Vector3(0.1, 0.1, 0.1);
+            //     player.scaling = new BABYLON.Vector3(2, 2, 2);
+            //     physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 1, friction: 0.1}, scene)
+            // })
 
             let lasthighlight;
             $("#ObjectSelector").on("input", function() {
