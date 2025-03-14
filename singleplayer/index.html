@@ -175,11 +175,18 @@
                 <br><input id="preview" type="checkbox">
                 <label>Preview Level (beta)</label>
 				<br>
+
 				<input id="MouseControls" type="checkbox">
 				<label for="MouseControls">Mouse Controls</label>
-				<input type="range" min="0.1" max="2" id="MouseControlsSensitivity" step=".1">
-				<br><label id="MouseControlsText">Sensitivity (1 default)</label>
 				<br>
+				<input id="overwriteMouseControls" type="checkbox">
+				<label id="overwriteMouseControlsText" for="overwriteMouseControls">Overwrite Steer Speed</label>
+				<br>
+				<input type="range" min="0.1" max="2" id="MouseControlsSensitivity" step=".1">
+				<br>
+				<label id="MouseControlsText">Sensitivity (1 default)</label>
+
+				<br><br>
 				<input id="AltMobileControls" type="checkbox">
 				<label for="AltMobileControls">Alt Mobile Controls</label>
             </div>
@@ -344,6 +351,8 @@
             $("#followtoggle").hide();
             $("#dodocontrols").hide();
             $("#challangeMenu").hide();
+			$("#overwriteMouseControlsText").hide();
+			$("#overwriteMouseControls").hide();
 			$("#MouseControlsSensitivity").hide();
 			$("#MouseControlsText").hide();
 
@@ -710,9 +719,10 @@
             });
 			let MouseControls = false;
 			let MouseControlsSensitivity = 1;
+			// let OGmouse = false;
 			$("#MouseControls").on("input", function() {
-				$("#MouseControlsSensitivity").toggle();
-				$("#MouseControlsText").toggle();
+				$("#overwriteMouseControls").toggle();
+				$("#overwriteMouseControlsText").toggle();
 				MouseControls = !MouseControls;
 				document.addEventListener("click", () => {
 					if (isMapLoaded && MouseControls) document.body.requestPointerLock();
@@ -720,7 +730,20 @@
 
 				document.addEventListener("mousemove", (event) => {
 					if (document.pointerLockElement === document.body && isMapLoaded && MouseControls) {
-						rotation += event.movementX * 0.002 * MouseControlsSensitivity;
+						let rotationChange = event.movementX * 0.002 * MouseControlsSensitivity;
+						if (!MouseStearOverwrite) {
+							rotationChange = Math.max(Math.min(rotationChange, steer), -steer);
+							rotation += rotationChange;
+
+							document.addEventListener("mousedown", () => {
+								window.controls.space = true;
+							});
+
+							document.addEventListener("mouseup", () => {
+								window.controls.space = false;
+							});
+						}
+						else rotation += rotationChange;
 					}
 				});
 
@@ -729,7 +752,13 @@
 						console.log("Pointer unlocked");
 					}
 				});
-
+			});
+			let MouseStearOverwrite = false;
+			$("#overwriteMouseControls").on("input", function() {
+				$("#MouseControlsSensitivity").toggle();
+				$("#MouseControlsText").toggle();
+				MouseControlsSensitivity = 1;
+				MouseStearOverwrite = !MouseStearOverwrite;
 			});
 
 
